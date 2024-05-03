@@ -12,7 +12,7 @@ const queue = new Map();
 
 // Array para almacenar las canciones en la cola
 const voiceConnections = new Map();
-const searcher = new YTSearcher('AIzaSyD8fLg6JR9XUNqPA53Fev9AVwLPgKtWdFI');
+const searcher = new YTSearcher('');
 const commands = {
   play: {
     description: 'Reproduce una canción en el canal de voz actual. Uso: !play <nombre de la canción o URL de YouTube>',
@@ -32,9 +32,9 @@ const commands = {
 bot.on("ready", () => {
   console.log(`Logged in as ${bot.user.tag}!`);
   const activity = new Activity({
-    type: "PLAYING", // Tipo de actividad (JUGANDO, VIENDO, ESCUCHANDO)
-    name: "THE GAME", // Nombre de la actividad
-  }); // Establece la actividad al iniciar
+    type: "PLAYING", 
+    name: "THE GAME", 
+  }); 
 
   bot.user.setActivity(activity);
 });
@@ -73,7 +73,7 @@ bot.on("messageCreate", async (message) => {
     let songUrl = args[0];
     let songTitle = "";
 
-    // Verificar si la entrada es una URL válida o una consulta de búsqueda
+   
     if (!ytdl.validateURL(songUrl)) {
       const query = args.join(" ");
 
@@ -82,7 +82,7 @@ bot.on("messageCreate", async (message) => {
         if (!searchResult || !searchResult.first) {
           return message.reply(`No se encontraron resultados para "${query}".`);
         }
-
+        console.log(searchResult);
         songUrl = searchResult.first.url;
         songTitle = searchResult.first.title;
 
@@ -162,9 +162,9 @@ async function playNextSong(guildId, message) {
 
   const song = serverQueue[0];
   const streamOptions = {
-    quality: "highestaudio", // Calidad de audio más alta disponible
-    filter: "audioonly", // Solo descargar el audio
-    highWaterMark: 1 << 25, // Tamaño máximo del búfer en bytes (aprox. 32 MB)
+    quality: "highestaudio",
+    filter: "audioonly", 
+    highWaterMark: 1 << 25, 
   };
 
   const stream = ytdl(song.url, streamOptions);
@@ -174,15 +174,15 @@ async function playNextSong(guildId, message) {
 
   player.on("stateChange", (oldState, newState) => {
     if (newState.status === "idle") {
-      // La canción ha terminado de reproducirse
+    
       message.channel.send("¡Terminó la reproducción de: " + song.title);
-      serverQueue.shift(); // Eliminar la canción actual de la cola
+      serverQueue.shift(); 
 
-      // Reproducir la siguiente canción si hay más en la cola
+      
       if (serverQueue.length > 0) {
         playNextSong(guildId, message);
       } else {
-        // No hay más canciones en la cola, limpiar y desconectar el bot
+       
         message.channel.send("No hay más canciones en la cola.");
         resetQueue(guildId);
       }
@@ -202,4 +202,4 @@ async function resetQueue(guildId) {
   queue.delete(guildId);
 }
 
-bot.login('MTExNTc0NzQxNzY3Mzk3Nzk3Ng.GE7-AH.jHQ7h7UX_RN-OE3a6J2wCbiKGlHs5eQ-nOPLkw');
+bot.login('');
